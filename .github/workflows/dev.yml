@@ -41,7 +41,7 @@ jobs:
         run: yarn contentful migrate -e parth-test
   clean:
     name: Teardown sandbox environment
-    needs: setup
+    needs: migrate
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@main
