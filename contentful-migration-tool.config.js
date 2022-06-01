@@ -1,6 +1,4 @@
-// const { config } = require('dotenv');
-
-// const ENV = config().parsed ?? process.env;
+require('dotenv').config();
 
 module.exports = {
   spaceId: process.env.CONTENTFUL_SPACE_ID,
