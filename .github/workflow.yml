@@ -1,0 +1,53 @@
+name: Example workflow
+
+on:
+  push:
+    branches:
+      - '**'
+      - '!main'
+
+jobs:
+  setup:
+    name: Install dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 'lts/*'
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+      - name: Install dependencies
+        run: yarn install
+  migrate:
+    name: Run migration scripts
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 'lts/*'
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+      - name: Run migrations
+        run: yarn contentful migrate -e parth-test
+  clean:
+    name: Teardown sandbox environment
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 'lts/*'
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+      - name: Delete environment
+        run: yarn contentful delete -e parth-test --skip
