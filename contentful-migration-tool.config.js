@@ -1,9 +1,9 @@
-const { config } = require('dotenv');
+// const { config } = require('dotenv');
 
-const ENV = config().parsed ?? {};
+// const ENV = config().parsed ?? process.env;
 
 module.exports = {
-  spaceId: ENV.CONTENTFUL_SPACE_ID,
-  managementToken: ENV.CONTENTFUL_MANAGEMENT_TOKEN,
+  spaceId: process.env.CONTENTFUL_SPACE_ID,
+  managementToken: process.env.CONTENTFUL_MANAGEMENT_TOKEN,
   migrationDirectory: 'migrations',
 };

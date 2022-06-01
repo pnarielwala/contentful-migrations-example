@@ -4,12 +4,13 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "contentful": "ts-node node_modules/.bin/contentful-migration-helper"
+    "contentful": "dotenv ts-node node_modules/.bin/contentful-migration-helper"
   },
   "dependencies": {
     "contentful-migration": "^4.8.1",
     "contentful-migration-helper": "^1.2.0",
     "dotenv": "^16.0.0",
+    "dotenv-cli": "^5.1.0",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.2"
   }
