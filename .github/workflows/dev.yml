@@ -6,6 +6,9 @@ on:
       - '**'
       - '!main'
 
+env:
+  SHORT_SHA: CI-${GITHUB_SHA::7}
+
 jobs:
   setup:
     name: Install dependencies
@@ -21,8 +24,6 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
         run: yarn install
-      - name: Add SHORT_SHA env property with commit short sha
-        run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
       - name: Echo short sha
         run: echo ${SHORT_SHA}
   migrate:
@@ -38,13 +39,11 @@ jobs:
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
-      - name: Echo short sha
-        run: echo ${GITHUB_SHA::7}
       - name: Run migrations
         env:
           CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
           CONTENTFUL_MANAGEMENT_TOKEN: ${{ secrets.CONTENTFUL_MANAGEMENT_TOKEN }}
-        run: yarn contentful migrate -e parth-test --skip
+        run: yarn contentful migrate -e CI-${GITHUB_SHA::7} --skip
   clean:
     name: Teardown sandbox environment
     needs: migrate
@@ -62,4 +61,4 @@ jobs:
         env:
           CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
           CONTENTFUL_MANAGEMENT_TOKEN: ${{ secrets.CONTENTFUL_MANAGEMENT_TOKEN }}
-        run: yarn contentful delete -e parth-test --skip
+        run: yarn contentful delete -e CI-${GITHUB_SHA::7} --skip
