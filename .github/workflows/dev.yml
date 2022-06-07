@@ -69,6 +69,8 @@ jobs:
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+      - name: Output sandbox name
+        run: echo "${{ needs.setup.outputs.sandbox_name }}"
       - name: Delete environment
         env:
           CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
