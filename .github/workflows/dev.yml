@@ -7,7 +7,7 @@ on:
       - '!main'
 
 env:
-  SHORT_SHA: CI-${GITHUB_SHA::7}
+  SHORT_SHA: CI-${{ github.sha::7 }}
 
 jobs:
   setup:
