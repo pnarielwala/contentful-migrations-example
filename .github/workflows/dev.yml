@@ -35,10 +35,13 @@ jobs:
           path: '**/node_modules'
           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
       - name: Run migrations
-        run: yarn contentful migrate -e parth-test
+        env:
+          CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
+          CONTENTFUL_MANAGEMENT_TOKEN: ${{ secrets.CONTENTFUL_MANAGEMENT_TOKEN }}
+        run: yarn contentful migrate -e CI-${GITHUB_SHA::7} --skip
   clean:
     name: Teardown sandbox environment
-    needs: setup
+    needs: migrate
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@main
@@ -50,4 +53,7 @@ jobs:
           path: '**/node_modules'
           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
       - name: Delete environment
-        run: yarn contentful delete -e parth-test --skip
+        env:
+          CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
+          CONTENTFUL_MANAGEMENT_TOKEN: ${{ secrets.CONTENTFUL_MANAGEMENT_TOKEN }}
+        run: yarn contentful delete -e CI-${GITHUB_SHA::7} --skip
