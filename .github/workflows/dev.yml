@@ -11,6 +11,8 @@ jobs:
     name: Install dependencies
     runs-on: ubuntu-latest
     steps:
+      - uses: josStorer/get-current-time@v2
+        id: current-time
       - uses: actions/checkout@main
       - uses: actions/setup-node@v2
         with:
@@ -21,9 +23,6 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
         run: yarn install
-      - name: Get current time
-        uses: josStorer/get-current-time@v2
-        id: current-time
       - name: Use current time
         env:
           YEAR: '${{ steps.current-time.outputs.year }}'
@@ -31,7 +30,10 @@ jobs:
           MONTH: '${{ steps.current-time.outputs.month }}'
           HOUR: '${{ steps.current-time.outputs.hour }}'
           MINUTE: '${{ steps.current-time.outputs.minute }}'
-        run: echo master-${YEAR}_${MONTH}_${DAY}__${HOUR}_${MINUTE}
+        run: |
+          echo "::set-output name=sandbox_name::master-${YEAR}_${MONTH}_${DAY}__${HOUR}_${MINUTE}"
+    outputs:
+      sandbox_name: ${{ steps.identify.outputs.sandbox_name }}
   migrate:
     name: Run migration scripts
     needs: setup
@@ -45,6 +47,8 @@ jobs:
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
+      - name: Output sandbox name
+        run: echo "${{ needs.first-job.outputs.sandbox_name }}"
       - name: Run migrations
         env:
           CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
