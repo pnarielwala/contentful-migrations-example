@@ -31,7 +31,7 @@ jobs:
           MONTH: '${{ steps.current-time.outputs.month }}'
           HOUR: '${{ steps.current-time.outputs.hour }}'
           MINUTE: '${{ steps.current-time.outputs.minute }}'
-        run: echo master-${YEAR}_${MONTH}_$DAY__$HOUR_$MINUTE
+        run: echo master-${YEAR}_${MONTH}_${DAY}__${HOUR}_${MINUTE}
   migrate:
     name: Run migration scripts
     needs: setup
