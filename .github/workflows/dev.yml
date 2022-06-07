@@ -48,7 +48,7 @@ jobs:
           path: '**/node_modules'
           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
       - name: Output sandbox name
-        run: echo "${{ needs.first-job.outputs.sandbox_name }}"
+        run: echo "${{ needs.setup-job.outputs.sandbox_name }}"
       - name: Run migrations
         env:
           CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
