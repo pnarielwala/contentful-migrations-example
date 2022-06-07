@@ -24,6 +24,7 @@ jobs:
       - name: Install dependencies
         run: yarn install
       - name: Use current time
+        id: get-current-time
         env:
           YEAR: '${{ steps.current-time.outputs.year }}'
           DAY: '${{ steps.current-time.outputs.day }}'
@@ -33,7 +34,7 @@ jobs:
         run: |
           echo "::set-output name=sandbox_name::master-${YEAR}_${MONTH}_${DAY}__${HOUR}_${MINUTE}"
     outputs:
-      sandbox_name: ${{ steps.identify.outputs.sandbox_name }}
+      sandbox_name: ${{ steps.get-current-time.outputs.sandbox_name }}
   migrate:
     name: Run migration scripts
     needs: setup
