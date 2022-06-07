@@ -37,7 +37,7 @@ jobs:
           path: '**/node_modules'
           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
       - name: My step
-        run: myscript ${SHORT_SHA}
+        run: echo ${SHORT_SHA}
       - name: Run migrations
         env:
           CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
