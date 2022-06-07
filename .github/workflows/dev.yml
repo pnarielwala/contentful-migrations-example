@@ -21,6 +21,20 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
         run: yarn install
+      - name: Get current time
+        uses: josStorer/get-current-time@v2
+        id: current-time
+        with:
+          format: YYYYMMDD-HH
+          utcOffset: '+08:00'
+      - name: Use current time
+        env:
+          TIME: '${{ steps.current-time.outputs.time }}'
+          R_TIME: '${{ steps.current-time.outputs.readableTime }}'
+          F_TIME: '${{ steps.current-time.outputs.formattedTime }}'
+          YEAR: '${{ steps.current-time.outputs.year }}'
+          DAY: '${{ steps.current-time.outputs.day }}'
+        run: echo $TIME $R_TIME $F_TIME $YEAR $DAY
   migrate:
     name: Run migration scripts
     needs: setup
@@ -38,7 +52,7 @@ jobs:
         env:
           CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
           CONTENTFUL_MANAGEMENT_TOKEN: ${{ secrets.CONTENTFUL_MANAGEMENT_TOKEN }}
-        run: yarn contentful migrate -e CI-${GITHUB_SHA::7}
+        run: yarn contentful migrate -e CI-${GITHUB_SHA::7} --skip
   clean:
     name: Teardown sandbox environment
     if: ${{ always() }}

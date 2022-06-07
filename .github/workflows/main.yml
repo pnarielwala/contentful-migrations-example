@@ -34,19 +34,13 @@ jobs:
           path: '**/node_modules'
           key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
       - name: Run migrations
-        id: run_migrations
         env:
           CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
           CONTENTFUL_MANAGEMENT_TOKEN: ${{ secrets.CONTENTFUL_MANAGEMENT_TOKEN }}
         run: yarn contentful migrate -e CI-${GITHUB_SHA::7} --skip
-      - name: Cleanup if job fails
-        env:
-          CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
-          CONTENTFUL_MANAGEMENT_TOKEN: ${{ secrets.CONTENTFUL_MANAGEMENT_TOKEN }}
-        if: ${{ failure() && steps.demo.run_migrations == 'failure' }}
-        run: yarn contentful delete -e CI-${GITHUB_SHA::7} --skip
   clean:
     name: Teardown sandbox environment
+    if: ${{ always() }}
     needs: migrate
     runs-on: ubuntu-latest
     steps:
