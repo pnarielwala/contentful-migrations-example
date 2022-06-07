@@ -43,7 +43,7 @@ jobs:
         env:
           CONTENTFUL_SPACE_ID: ${{ secrets.CONTENTFUL_SPACE_ID }}
           CONTENTFUL_MANAGEMENT_TOKEN: ${{ secrets.CONTENTFUL_MANAGEMENT_TOKEN }}
-        if: ${{ failure() && steps.demo.run_migrations == 'failure' }}
+        if: ${{ failure() && steps.run_migrations.conclusion == 'failure' }}
         run: yarn contentful delete -e CI-${GITHUB_SHA::7} --skip
   clean:
     name: Teardown sandbox environment
